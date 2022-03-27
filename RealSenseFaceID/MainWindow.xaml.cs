@@ -193,8 +193,11 @@ namespace RealSenseFaceID
 
             if (printColor is object)
             {
-                using var graphics = Graphics.FromImage(printColor);
-                _painter.Draw(graphics, paintData);
+                lock (_locker)
+                {
+                    using var graphics = Graphics.FromImage(printColor);
+                    _painter.Draw(graphics, paintData);
+                }
 
                 var bitmapColor = printColor.ToBitmapSource();
                 bitmapColor.Freeze();
@@ -206,8 +209,11 @@ namespace RealSenseFaceID
 
             if (printDepth is object)
             {
-                using var graphics = Graphics.FromImage(printDepth);
-                _painter.Draw(graphics, paintData);
+                lock (_locker)
+                {
+                    using var graphics = Graphics.FromImage(printDepth);
+                    _painter.Draw(graphics, paintData);
+                }
 
                 var bitmapDepth = printDepth.ToBitmapSource();
                 bitmapDepth.Freeze();

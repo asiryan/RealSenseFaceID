@@ -142,7 +142,7 @@ namespace RealSenseFaceID
             _thread = new Thread(() => ProcessFrame(Frame, Depth))
             {
                 IsBackground = true,
-                Priority = ThreadPriority.BelowNormal
+                Priority = ThreadPriority.Normal
             };
             _thread?.Start();
         }
@@ -170,6 +170,7 @@ namespace RealSenseFaceID
         private void ProcessFrame(Bitmap frame, ushort[,] depth)
         {
             VerificationResult = _faceVerification.Forward(frame, depth);
+            InvokeDrawing();
         }
 
         /// <summary>
@@ -177,47 +178,40 @@ namespace RealSenseFaceID
         /// </summary>
         private void InvokeDrawing()
         {
-            try
+            // verification result
+            var verificationResult = VerificationResult;
+            var paintData = new PaintData
             {
-                // verification result
-                var verificationResult = VerificationResult;
-                var paintData = new PaintData
-                {
-                    Rectangle = verificationResult.Rectangle,
-                    Points = verificationResult.Landmarks,
-                    Labels = new string[] { verificationResult.Label, 
+                Rectangle = verificationResult.Rectangle,
+                Points = verificationResult.Landmarks,
+                Labels = new string[] { verificationResult.Label,
                         verificationResult.Live.ToString() }
-                };
+            };
 
-                // color drawing
-                var printColor = Frame;
+            // color drawing
+            var printColor = Frame;
 
-                if (printColor is object)
-                {
-                    using var graphics = Graphics.FromImage(printColor);
-                    _painter.Draw(graphics, paintData);
-
-                    var bitmapColor = printColor.ToBitmapSource();
-                    bitmapColor.Freeze();
-                    _ = Dispatcher.BeginInvoke(new ThreadStart(delegate { imgColor.Source = bitmapColor; }));
-                }
-
-                // depth drawing
-                var printDepth = Depth?.Equalize()?.FromDepth();
-
-                if (printDepth is object)
-                {
-                    using var graphics = Graphics.FromImage(printDepth);
-                    _painter.Draw(graphics, paintData);
-
-                    var bitmapDepth = printDepth.ToBitmapSource();
-                    bitmapDepth.Freeze();
-                    _ = Dispatcher.BeginInvoke(new ThreadStart(delegate { imgDepth.Source = bitmapDepth; }));
-                }
-            }
-            catch
+            if (printColor is object)
             {
-                // ignore
+                using var graphics = Graphics.FromImage(printColor);
+                _painter.Draw(graphics, paintData);
+
+                var bitmapColor = printColor.ToBitmapSource();
+                bitmapColor.Freeze();
+                _ = Dispatcher.BeginInvoke(new ThreadStart(delegate { imgColor.Source = bitmapColor; }));
+            }
+
+            // depth drawing
+            var printDepth = Depth?.Equalize()?.FromDepth();
+
+            if (printDepth is object)
+            {
+                using var graphics = Graphics.FromImage(printDepth);
+                _painter.Draw(graphics, paintData);
+
+                var bitmapDepth = printDepth.ToBitmapSource();
+                bitmapDepth.Freeze();
+                _ = Dispatcher.BeginInvoke(new ThreadStart(delegate { imgDepth.Source = bitmapDepth; }));
             }
         }
 

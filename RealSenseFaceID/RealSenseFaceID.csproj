@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FaceONNX.Gpu" Version="2.0.0.1" />
+    <PackageReference Include="librealsense.x64" Version="2.45.1" />
+    <PackageReference Include="UMapx.Video.RealSense" Version="5.2.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="C:\Users\Valery\.nuget\packages\librealsense.x64\2.45.1\contentFiles\any\netstandard2.0\realsense2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\Valery\.nuget\packages\librealsense.x64\2.45.1\contentFiles\any\netstandard2.0\realsense2.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -230,6 +230,7 @@ namespace RealSenseFaceID.Core
                     _faceLandmarksExtractor?.Dispose();
                     _faceDepthClassifier?.Dispose();
                     _eyeBlinkClassifier?.Dispose();
+                    _faceEmbedder?.Dispose();
                 }
 
                 _disposed = true;

@@ -38,10 +38,11 @@ namespace RealSenseFaceID.Core
         /// <summary>
         /// Face identification and verification class.
         /// </summary>
-        /// <param name="sessionOptions">Session options</param>
+        /// <param name="useCUDA">Use CUDA or not</param>
         /// <param name="useEyeTracking">Use eye tracking or no</param>
-        public FaceID(SessionOptions sessionOptions, bool useEyeTracking = false)
+        public FaceID(bool useEyeTracking = false, bool useCUDA = false)
         {
+            var sessionOptions = useCUDA ? SessionOptions.MakeSessionOptionWithCudaProvider(0) : new SessionOptions();
             _faceDetector = new FaceDetector(sessionOptions);
             _faceLandmarksExtractor = new FaceLandmarksExtractor(sessionOptions);
             _faceDepthClassifier = new FaceDepthClassifier(sessionOptions);

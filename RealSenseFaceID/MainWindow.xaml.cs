@@ -1,5 +1,4 @@
-﻿using Microsoft.ML.OnnxRuntime;
-using RealSenseFaceID.Core;
+﻿using RealSenseFaceID.Core;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -23,7 +22,7 @@ namespace RealSenseFaceID
         private static readonly object _locker = new object();
         private readonly FaceID _faceVerification;
         private readonly Painter _painter;
-        private Thread _procTask;
+        private Thread _thread;
         private Bitmap _frame;
         private ushort[,] _depth;
 
@@ -39,8 +38,7 @@ namespace RealSenseFaceID
             InitializeComponent();
             Closing += MainWindow_Closing;
 
-            var sessionOptions = SessionOptions.MakeSessionOptionWithCudaProvider(0);
-            _faceVerification = new FaceID(sessionOptions, true);
+            _faceVerification = new FaceID(useEyeTracking: true, useCUDA: true);
 
             var files = Directory.GetFiles(@"..\..\..\images", "*.*", SearchOption.AllDirectories);
 
@@ -141,12 +139,12 @@ namespace RealSenseFaceID
             Frame = (Bitmap)eventArgs.Frame.Clone();
             InvokeDrawing();
 
-            _procTask = new Thread(() => ProcessFrame(Frame, Depth))
+            _thread = new Thread(() => ProcessFrame(Frame, Depth))
             {
                 IsBackground = true,
-                Priority = ThreadPriority.Highest
+                Priority = ThreadPriority.BelowNormal
             };
-            _procTask?.Start();
+            _thread?.Start();
         }
 
         /// <summary>
